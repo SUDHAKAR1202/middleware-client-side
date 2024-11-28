@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Submission</title>
+</head>
+<body>
+    <h1>Submit Your Data</h1>
+    <form id="form">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required />
+        </div><br />
+        <div>
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" required />
+        </div><br />
+        <div>
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" required></textarea>
+        </div><br />
+        <button type="submit">Submit</button>
+
+    </form>
+
+    <h2>Response:</h2>
+    <pre id="response"></pre>
+
+    <script>
+        document.getElementById('form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            //Collect form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('http://localhost:5000/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                document.getElementById('response').textContent = JSON.stringify(result, null, 2);
+            } catch(error) {
+                console.error('Error:', error);
+            }
+        })
+    </script>
+</body>
+</html>
